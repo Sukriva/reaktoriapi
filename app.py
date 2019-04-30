@@ -1,6 +1,7 @@
 import csv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+
 
 # configuration
 DEBUG = True
@@ -29,8 +30,30 @@ def get_countries():
             if numLine > 5:
                 country = row[0]
                 countries.append(country)
-        print(countries)
+        # print(countries)
     return jsonify({'countries':countries})
+
+@app.route('/country', methods=['GET'])
+def get_countryData():
+    country = request.args.get("country")
+    with open('Carbondioxide.csv') as cofile:
+        readCofile = csv.reader(cofile, delimiter= ',')
+        numLine = readCofile.line_num
+        headers = []
+        emissions = []
+
+        for row in readCofile:
+            numLine += 1
+            if numLine == 5:
+                headers = (row)
+                for i in headers:
+                    index = headers.index(i)
+            if numLine > 5:
+                if row[0] == country:
+                    emission=(row)
+                    emissions.append(emission)
+
+    return jsonify({'emissions':emissions, 'headers':headers})
 
 
 if __name__ == '__main__':
