@@ -45,13 +45,13 @@ def get_countryData():
         for row in readCofile:
             numLine += 1
             if numLine == 5:
-                headers = (row)
+                headers = (row[4:])
                 for i in headers:
                     index = headers.index(i)
             if numLine > 5:
                 if row[0] == country:
-                    emission=(row)
-                    emissions.append(emission)
+                    emission=(row[4:])
+                    emissions=(emission)
 
     return jsonify({'emissions':emissions, 'headers':headers})
 
