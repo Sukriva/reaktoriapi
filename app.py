@@ -18,20 +18,33 @@ CORS(app)
 def ping_pong():
     return jsonify('pong!')
 
-@app.route('/countries', methods=['GET'])
-def get_countries():
-    with open('Carbondioxide.csv') as cofile:
-        readCofile = csv.reader(cofile, delimiter= ',')
-        numLine = readCofile.line_num
-        countries = []
+# def kokeilu(populations, emissions):
+#     perCapita = []
+#     for i in emissions:
+#         perCapita = i/populations[i]
+#         print(perCapita)
 
-        for row in readCofile:
+
+@app.route('/countries', methods=['GET'])
+def get_countries_and_population():
+    countri = request.args.get("countri")
+    with open('Population.csv') as pofile:
+        readPofile = csv.reader(pofile, delimiter= ',')
+        numLine = readPofile.line_num
+        countries = []
+        populations = []
+
+        for row in readPofile:
             numLine += 1
             if numLine > 5:
                 country = row[0]
                 countries.append(country)
-        # print(countries)
-    return jsonify({'countries':countries})
+                if numLine > 5:
+                    if row[0] == countri:
+                        population=(row[4:])
+                        populations=(population)
+
+    return jsonify({'countries':countries, 'populations': populations})
 
 @app.route('/country', methods=['GET'])
 def get_countryData():
@@ -46,8 +59,8 @@ def get_countryData():
             numLine += 1
             if numLine == 5:
                 headers = (row[4:])
-                for i in headers:
-                    index = headers.index(i)
+                # for i in headers:
+                #     index = headers.index(i)
             if numLine > 5:
                 if row[0] == country:
                     emission=(row[4:])
