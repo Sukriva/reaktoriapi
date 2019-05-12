@@ -26,25 +26,19 @@ def ping_pong():
 
 
 @app.route('/countries', methods=['GET'])
-def get_countries_and_population():
-    countri = request.args.get("countri")
+def get_countries():
     with open('Population.csv') as pofile:
         readPofile = csv.reader(pofile, delimiter= ',')
         numLine = readPofile.line_num
         countries = []
-        populations = []
 
         for row in readPofile:
             numLine += 1
             if numLine > 5:
                 country = row[0]
                 countries.append(country)
-                if numLine > 5:
-                    if row[0] == countri:
-                        population=(row[4:])
-                        populations=(population)
 
-    return jsonify({'countries':countries, 'populations': populations})
+    return jsonify({'countries':countries})
 
 @app.route('/country', methods=['GET'])
 def get_countryData():
@@ -66,7 +60,19 @@ def get_countryData():
                     emission=(row[4:])
                     emissions=(emission)
 
-    return jsonify({'emissions':emissions, 'headers':headers})
+    with open('Population.csv') as pofile:
+        readPofile = csv.reader(pofile, delimiter= ',')
+        numLine = readPofile.line_num
+        populations = []
+
+        for row in readPofile:
+            numLine += 1
+            if numLine > 5:
+                if row[0] == country:
+                    population=(row[4:])
+                    populations=(population)
+
+    return jsonify({'emissions':emissions, 'headers':headers, 'populations':populations})
 
 
 if __name__ == '__main__':
