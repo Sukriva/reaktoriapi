@@ -38,10 +38,10 @@ def get_countryData():
         for row in readCofile:
             numLine += 1
             if numLine == 5:
-                headers = (row[4:])
+                headers = (row[4:-1])
             if numLine > 5:
                 if row[0] == country:
-                    emission=(row[4:])
+                    emission=(row[4:-1])
                     emissions=(emission)
 
     with open('Population.csv') as pofile:
@@ -54,7 +54,7 @@ def get_countryData():
             numLine += 1
             if numLine > 5:
                 if row[0] == country:
-                    population=(row[4:])
+                    population=(row[4:-1])
                     populations=(population)
     index = 0
     while index < len(populations):
