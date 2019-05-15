@@ -11,6 +11,7 @@ app = Flask(__name__)
 # enable CORS
 CORS(app)
 
+#Getting a list of countries
 @app.route('/countries', methods=['GET'])
 def get_countries():
     with open('Population.csv') as pofile:
@@ -24,17 +25,22 @@ def get_countries():
                 country = row[0]
                 countries.append(country)
 
+    pofile.close()
+
     return jsonify({'countries':countries})
 
+#Getting emissions and per capita by country, and years
 @app.route('/country', methods=['GET'])
 def get_countryData():
     country = request.args.get("country")
+    #opening the file
     with open('Carbondioxide.csv') as cofile:
         readCofile = csv.reader(cofile, delimiter= ',')
         numLine = readCofile.line_num
         headers = []
         emissions = []
 
+        #looping through the information and adding it to lists
         for row in readCofile:
             numLine += 1
             if numLine == 5:
@@ -56,6 +62,8 @@ def get_countryData():
                 if row[0] == country:
                     population=(row[4:-1])
                     populations=(population)
+
+    #counting per capita based on the emissions and population of a country
     index = 0
     while index < len(populations):
         pop = populations[index]
@@ -68,6 +76,9 @@ def get_countryData():
             perCapita.append(0)
         index = index + 1
 
+    pofile.close()
+    cofile.close()
+    
     return jsonify({'emissions':emissions, 'headers':headers, 'perCapita': perCapita})
 
 
